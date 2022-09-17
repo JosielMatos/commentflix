@@ -1,43 +1,59 @@
-<p align="center">
-  <img alt="Letmeask" src=".github/logo.svg" width="160px">
-</p>
-
-<br>
-
 ## 🧪 Tech Stack
-
-Project developed with the following Tech Stack:
 
 - [React](https://reactjs.org)
 - [Firebase](https://firebase.google.com/)
 - [TypeScript](https://www.typescriptlang.org/)
 
-## 🚀 How to run locally
+## 🚀 Como rodar localmente
 
-Clone the project and go to the folder.
+Clone o projeto em sua máquina.
 
 ```bash
-$ git clone https://github.com/JosielMatos/letmeask
-$ cd letmeask
+$ git clone https://github.com/JosielMatos/commentflix
+$ cd commentflix
 ```
 
-Type on your terminal:
+Instale as dependências pelo terminal:
 ```bash
-# Install dependencies
 $ yarn
+```
 
-# Start
+Você vai precisar de um banco de dados no firebase. No firebase console, crie um novo projeto, adicione uma <strong>realtime database</strong> e na aba regras coloque as seguintes:
+
+```
+{
+  "rules": {
+    "rooms": {
+      ".read": false,
+    	".write": "auth != null",
+      "$roomId": {
+        ".read": true,
+        ".write": "auth != null && (!data.exists() || data.child('authorId').val() == auth.id)",
+        "questions": {
+          ".read": true,
+          ".write": "auth != null && (!data.exists() || data.parent().child('authorId').val() == auth.id)",
+          "likes": {
+          	".read": true,
+            ".write": "auth != null && (!data.exists() || data.child('authorId').val() == auth.id)",
+          }
+        }
+      }
+    }
+  }
+}
+```
+Na página de configurações do projeto, você consegue as chaves e links necessários para preencher as variáveis de ambiente.
+
+Para rodar o projeto:
+```
 $ yarn start
 ```
-Access http://localhost:3000 in your browser.
+Acesse http://localhost:3000 no navegador.
 
-It is necessary a [Firebase](https://firebase.google.com/) account and a project to be able to use a Realtime Database.
+## Versão Live
 
-## 💻 Project
+-(Aqui)[https://commentflix.vercel.app/] Você pode testar minha versão publicada na vercel.
 
-Letmeask is perfect for content creators to create rooms for Q&A with their audience, in a very organized and democratic way.
+-Use o código -NCBY7OQu9-9ZWESsM3B para entrar em uma sala que eu criei pra testar, caso não queira logar com o google para criar uma sala.
 
-## 🔖 Layout
-
-- [Layout Web](https://www.figma.com/file/mRDEawnPujjvaqCL1LBaPX/Letmeask) 
-
+-Caso crie uma sala, o link do vídeo do youtube precisa estar "puro", sem querys de tempo pra poder pegar o hash certinho.
