@@ -54,6 +54,6 @@ Acesse http://localhost:3000 no navegador.
 
 - [Aqui](https://commentflix.vercel.app/) Você pode testar minha versão publicada na vercel.
 
-- Use o código -NCBY7OQu9-9ZWESsM3B para entrar em uma sala que eu criei pra testar, caso não queira logar com o google para criar uma sala.
+- Use o código -NCFe9BwY0X1nRh3WFFu para entrar em uma sala que eu criei pra testar, caso não queira logar com o google para criar uma sala.
 
 - Caso crie uma sala, o link do vídeo do youtube precisa estar "puro", sem querys de tempo pra poder pegar o hash certinho.
