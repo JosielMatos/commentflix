@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { database } from "../services/firebase";
 import { useAuth } from "./useAuth";
 
-type QuestionType = {
+type CommentType = {
     id: string,
     author: {
         name: string;
@@ -15,7 +15,7 @@ type QuestionType = {
     likeId: string | undefined;
 }
 
-type FirebaseQuestions = Record<string, {
+type FirebaseComments = Record<string, {
     author: {
         name: string;
         avatar: string;
@@ -32,15 +32,15 @@ export function useRoom(RoomId: string) {
     const { user } = useAuth();
     const [title, setTitle] = useState('');
     const [videoUrl, setVideoUrl] = useState('');
-    const [questions, setQuestions] = useState<QuestionType[]>([])
+    const [comments, setComments] = useState<CommentType[]>([])
 
     useEffect(() => {
         const roomsRef = database.ref(`rooms/${RoomId}`);
 
         roomsRef.on('value', room => {
             const databaseRoom = room.val();
-            const firebaseQuestions: FirebaseQuestions = databaseRoom.questions ?? {};
-            const parsedQuestions = Object.entries(firebaseQuestions).map(([key, value]) => {
+            const firebaseComments: FirebaseComments = databaseRoom.comments ?? {};
+            const parsedComments = Object.entries(firebaseComments).map(([key, value]) => {
                 return {
                     id: key,
                     content: value.content,
@@ -54,7 +54,7 @@ export function useRoom(RoomId: string) {
 
             setTitle(databaseRoom.title)
             setVideoUrl(databaseRoom.videoUrl)
-            setQuestions(parsedQuestions)
+            setComments(parsedComments)
         })
 
         return () => {
@@ -62,5 +62,5 @@ export function useRoom(RoomId: string) {
         }
     }, [RoomId, user?.id])
 
-    return { questions, title, videoUrl }
+    return { comments, title, videoUrl }
 }

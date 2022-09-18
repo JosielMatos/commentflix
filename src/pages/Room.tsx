@@ -6,7 +6,7 @@ import { FormEvent, useState } from "react";
 import "../styles/room.scss";
 import { Button } from "../components/Button";
 import { database } from "../services/firebase";
-import { Question } from "../components/Question";
+import { Comment } from "../components/Comment";
 import { useRoom } from "../hooks/useRoom";
 
 type RoomParams = {
@@ -15,22 +15,22 @@ type RoomParams = {
 
 export function Room() {
   const { user, signInWithGoogle, signOut } = useAuth();
-  const [newQuestion, setNewQuestion] = useState("");
+  const [newComment, setNewComment] = useState("");
   const params = useParams<RoomParams>();
   const roomId = params.id;
-  const { title, questions, videoUrl } = useRoom(roomId);
+  const { title, comments, videoUrl } = useRoom(roomId);
 
-  async function handleSendQuestion(event: FormEvent) {
+  async function handleSendComment(event: FormEvent) {
     event.preventDefault();
-    if (newQuestion.trim() === "") {
+    if (newComment.trim() === "") {
       return;
     }
     if (!user) {
       throw new Error("You must be logged in");
     }
 
-    const question = {
-      content: newQuestion,
+    const comment = {
+      content: newComment,
       author: {
         name: user.name,
         avatar: user.avatar,
@@ -38,21 +38,21 @@ export function Room() {
       isHighlighted: false,
       isAnswered: false,
     };
-    await database.ref(`rooms/${roomId}/questions`).push(question);
+    await database.ref(`rooms/${roomId}/comments`).push(comment);
 
-    setNewQuestion("");
+    setNewComment("");
   }
 
-  async function handleLikeQuestion(
-    questionId: string,
+  async function handleLikeComment(
+    commentId: string,
     likeId: string | undefined
   ) {
     if (likeId) {
       await database
-        .ref(`rooms/${roomId}/questions/${questionId}/likes/${likeId}`)
+        .ref(`rooms/${roomId}/comments/${commentId}/likes/${likeId}`)
         .remove();
     } else {
-      await database.ref(`rooms/${roomId}/questions/${questionId}/likes`).push({
+      await database.ref(`rooms/${roomId}/comments/${commentId}/likes`).push({
         authorId: user?.id,
       });
     }
@@ -73,7 +73,7 @@ export function Room() {
       <main className='content'>
         <div className='room-title'>
           <h1>{title}</h1>
-          {questions.length > 0 && <span>{questions.length} Comentário(s)</span>}
+          {comments.length > 0 && <span>{comments.length} Comentário(s)</span>}
         </div>
 
         <section className='video-frame'>
@@ -88,11 +88,11 @@ export function Room() {
           ></iframe>
         </section>
 
-        <form onSubmit={handleSendQuestion}>
+        <form onSubmit={handleSendComment}>
           <textarea
             placeholder='No que você está pensando?'
-            onChange={(event) => setNewQuestion(event.target.value)}
-            value={newQuestion}
+            onChange={(event) => setNewComment(event.target.value)}
+            value={newComment}
           />
           <div className='form-footer'>
             {user ? (
@@ -112,27 +112,27 @@ export function Room() {
           </div>
         </form>
 
-        <section className='questions-list'>
-          {questions.map((question) => {
+        <section className='comments-list'>
+          {comments.map((comment) => {
             return (
-              <Question
-                key={question.id}
-                content={question.content}
-                author={question.author}
-                isAnswered={question.isAnswered}
-                isHighlighted={question.isHighlighted}
+              <Comment
+                key={comment.id}
+                content={comment.content}
+                author={comment.author}
+                isAnswered={comment.isAnswered}
+                isHighlighted={comment.isHighlighted}
               >
-                {!question.isAnswered && (
+                {!comment.isAnswered && (
                   <button
-                    className={`like-button ${question.likeId ? "liked" : ""}`}
+                    className={`like-button ${comment.likeId ? "liked" : ""}`}
                     type='button'
                     aria-label='Like'
                     onClick={() =>
-                      handleLikeQuestion(question.id, question.likeId)
+                      handleLikeComment(comment.id, comment.likeId)
                     }
                   >
-                    {question.likeCount > 0 && (
-                      <span>{question.likeCount}</span>
+                    {comment.likeCount > 0 && (
+                      <span>{comment.likeCount}</span>
                     )}
                     <svg
                       width='24'
@@ -151,7 +151,7 @@ export function Room() {
                     </svg>
                   </button>
                 )}
-              </Question>
+              </Comment>
             );
           })}
         </section>
