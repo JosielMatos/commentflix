@@ -48,7 +48,6 @@ Para rodar o projeto:
 ```
 $ yarn start
 ```
-Acesse http://localhost:3000 no navegador.
 
 ## Versão Live
 

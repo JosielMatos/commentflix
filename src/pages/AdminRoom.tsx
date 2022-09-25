@@ -1,5 +1,5 @@
 import { RoomCode } from "../components/RoomCode";
-import { useHistory, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { database } from "../services/firebase";
 import { useRoom } from "../hooks/useRoom";
 
@@ -15,9 +15,9 @@ type RoomParams = {
 };
 
 export function AdminRoom() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const params = useParams<RoomParams>();
-  const roomId = params.id;
+  const roomId = params.id as string;
   const { title, comments } = useRoom(roomId);
 
   async function handleMarkAsAnswered(commentId: string) {
@@ -42,7 +42,7 @@ export function AdminRoom() {
     await database.ref(`rooms/${roomId}`).update({
       closedAt: new Date(),
     });
-    history.push("/");
+    navigate("/");
   }
 
   return (

@@ -17,7 +17,7 @@ export function Room() {
   const { user, signInWithGoogle, signOut } = useAuth();
   const [newComment, setNewComment] = useState("");
   const params = useParams<RoomParams>();
-  const roomId = params.id;
+  const roomId = params.id as string;
   const { title, comments, videoUrl } = useRoom(roomId);
 
   async function handleSendComment(event: FormEvent) {

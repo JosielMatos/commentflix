@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { database } from "../services/firebase";
 
 import "../styles/auth.scss";
@@ -11,7 +11,7 @@ export function NewRoom() {
   const { user } = useAuth();
   const [newRoom, setNewRoom] = useState("");
   const [newVideoUrl, setNewVideoUrl] = useState("");
-  const history = useHistory();
+  const navigate = useNavigate();
 
   async function handleCreateRoom(event: FormEvent) {
     //prevent html default refresh behavior
@@ -34,7 +34,7 @@ export function NewRoom() {
       videoUrl: newVideoUrl.slice(-11),
     });
 
-    history.push(`/rooms/${firebaseRoom.key}`);
+    navigate(`/rooms/${firebaseRoom.key}`);
   }
 
   return (
